@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISTILE Annuaire</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>ISTILE Annuaire</h1>
+    <nav>
+      <a href="#recherche-section">Recherche</a>
+      <a href="#etudiants">Étudiants</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="recherche-section">
+      <h2>Recherche</h2>
+      <form>
+        <label for="recherche">Rechercher :</label>
+        <input type="search" id="recherche" placeholder="Nom ou prénom...">
+        <button type="submit">Rechercher</button>
+      </form>
+      <p id="resultat" aria-live="polite"></p>
+    </section>
+
+    <section id="etudiants">
+      <h2>Étudiants</h2>
+      <div id="liste" class="grille"></div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>Pour nous contacter : <a href="mailto:contact@istile.cm">contact@istile.cm</a></p>
+    </section>
+  </main>
+
+  <footer><p>© 2026 ISTILE</p></footer>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
