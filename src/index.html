@@ -1,45 +1,84 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ISTILE Annuaire</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ISTILE - Annuaire des étudiants</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <h1>ISTILE Annuaire</h1>
     <nav>
-      <a href="#recherche-section">Recherche</a>
+      <a href="#recherche">Recherche</a>
       <a href="#etudiants">Étudiants</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
 
   <main>
-    <section id="recherche-section">
+    <section id="recherche">
       <h2>Recherche</h2>
-      <form>
-        <label for="recherche">Rechercher :</label>
-        <input type="search" id="recherche" placeholder="Nom ou prénom...">
-        <button type="submit">Rechercher</button>
-      </form>
-      <p id="resultat" aria-live="polite"></p>
+      <label for="recherche-input">Rechercher un étudiant</label>
+      <input id="recherche-input" type="text" placeholder="Nom, prénom..." />
+
+      <label for="filiere">Filière</label>
+      <select id="filiere">
+        <option value="">Toutes</option>
+        <option>Informatique</option>
+        <option>Électrotechnique</option>
+        <option>Réseaux</option>
+      </select>
+
+      <button type="button">Rechercher</button>
     </section>
 
     <section id="etudiants">
       <h2>Étudiants</h2>
-      <div id="liste" class="grille"></div>
+      <div class="grille">
+        <article><h3>Amina Diallo</h3><p>Informatique</p><p>Note : 16/20</p></article>
+        <article><h3>Kevin Mbarga</h3><p>Électrotechnique</p><p>Note : 14/20</p></article>
+        <article><h3>Sara Nkono</h3><p>Réseaux</p><p>Note : 15/20</p></article>
+        <article><h3>Yannick Fotso</h3><p>Informatique</p><p>Note : 13/20</p></article>
+        <article><h3>Lea Kamga</h3><p>Électrotechnique</p><p>Note : 17/20</p></article>
+        <article><h3>Paul Essono</h3><p>Réseaux</p><p>Note : 12/20</p></article>
+      </div>
     </section>
 
     <section id="contact">
       <h2>Contact</h2>
-      <p>Pour nous contacter : <a href="mailto:contact@istile.cm">contact@istile.cm</a></p>
+      <p>ISTILE - Yaoundé</p>
+      <p>Email : contact@istile.cm</p>
     </section>
   </main>
 
-  <footer><p>© 2026 ISTILE</p></footer>
-
-  <script src="main.js" defer></script>
+  <footer>
+    <p>© ISTILE - Annuaire des étudiants</p>
+  </footer>
+  <script>
+    const input = document.getElementById('recherche-input');
+    const select = document.getElementById('filiere');
+    const bouton = document.querySelector('button');
+    const cartes = document.querySelectorAll('.grille article');
+  
+    function filtrer() {
+      const texte = input.value.toLowerCase();
+      const filiere = select.value.toLowerCase();
+  
+      cartes.forEach(carte => {
+        const contenu = carte.textContent.toLowerCase();
+        const okTexte = contenu.includes(texte);
+        const okFiliere = filiere === '' || contenu.includes(filiere);
+        carte.style.display = (okTexte && okFiliere) ? '' : 'none';
+      });
+    }
+  
+    bouton.addEventListener('click', filtrer);
+    input.addEventListener('input', filtrer);
+    select.addEventListener('change', filtrer);
+  </script>
+  </body> 
+</body>
+</script>
 </body>
 </html>

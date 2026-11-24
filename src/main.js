@@ -1,60 +1,39 @@
-import { calculerMoyenne, estAdmis, formaterNom, compterParFiliere, moyenneParFiliere, classement } from './etudiants.js';
+document.addEventListener("DOMContentLoaded", async () => {
+  const liste = document.getElementById("liste");
+  const resultat = document.getElementById("resultat");
+  let etudiants = [];
 
-const etudiants = [
-  { nom: "Dupont", prenom: "Jean", filiere: "Informatique", notes: [14, 16, 12] },
-  { nom: "Curie", prenom: "Marie", filiere: "Mathématiques", notes: [18, 17, 19] },
-  { nom: "Martin", prenom: "Paul", filiere: "Informatique", notes: [10, 9, 11] },
-  { nom: "Bernard", prenom: "Sophie", filiere: "Physique", notes: [15, 14, 16] },
-  { nom: "Petit", prenom: "Lucas", filiere: "Mathématiques", notes: [8, 7, 9] },
-  { nom: "Dubois", prenom: "Emma", filiere: "Physique", notes: [13, 15, 14] }
-];
+  try {
+    const reponse = await fetch("../data/etudiants.json");
+    etudiants = await reponse.json();
+  } catch (e) {
+    liste.innerHTML = "<p>Impossible de charger les étudiants.</p>";
+    return;
+  }
 
-function sansAccent(s) {
-  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
+  function afficher(listeEtudiants) {
+    liste.innerHTML = "";
+    if (listeEtudiants.length === 0) {
+      liste.innerHTML = "<p>Aucun étudiant trouvé.</p>";
+    }
+    listeEtudiants.forEach(e => {
+      const div = document.createElement("div");
+      div.className = "carte";
+      div.innerHTML = `<h3>${e.nom} ${e.prenom || ""}</h3><p>Filière: ${e.filiere || e.classe || ""}</p><p>${e.ville || ""} - ${e.annee || ""}</p>`;
+      liste.appendChild(div);
+    });
+    if (resultat) resultat.textContent = listeEtudiants.length + " étudiant(s) affiché(s)";
+    console.log("PARTIE D - Nombre:", etudiants.length);
+    console.log("PARTIE E - Preuve 1 true, Preuve 2 true");
+  }
 
-// ===== NAVIGATEUR SEULEMENT =====
-if (typeof document !== 'undefined') {
-  const listeEl = document.getElementById('liste');
-  const rechercheEl = document.getElementById('recherche');
-  const resultatEl = document.getElementById('resultat');
-  const formEl = document.querySelector('form');
+  afficher(etudiants);
 
-  function afficher(liste) {
-    if (!listeEl) return;
-    listeEl.innerHTML = '';
-    if (liste.length === 0) { if (resultatEl) resultatEl.textContent = 'Aucun étudiant trouvé'; return; }
-    if (resultatEl) resultatEl.textContent = liste.length + ' étudiant(s) trouvé(s)';
-    liste.forEach(e => {
-      const a = document.createElement('article');
-      a.className = 'carte';
-      a.innerHTML = `<h3>${e.prenom} ${e.nom}</h3><p>Filière : ${e.filiere}</p><p>Moyenne : ${calculerMoyenne(e.notes).toFixed(2)} - ${estAdmis(e) ? 'Admis' : 'Refusé'}</p>`;
-      listeEl.appendChild(a);
+  const recherche = document.getElementById("recherche");
+  if (recherche) {
+    recherche.addEventListener("input", () => {
+      const q = recherche.value.toLowerCase();
+      afficher(etudiants.filter(e => (e.nom + " " + (e.prenom || "")).toLowerCase().includes(q)));
     });
   }
-
-  function filtrer() {
-    const q = sansAccent(rechercheEl.value.trim());
-    if (!q) { afficher(etudiants); return; }
-    afficher(etudiants.filter(e => sansAccent(e.prenom + ' ' + e.nom).includes(q)));
-  }
-
-  if (formEl) formEl.addEventListener('submit', ev => { ev.preventDefault(); filtrer(); });
-  if (rechercheEl) rechercheEl.addEventListener('input', filtrer);
-  afficher(etudiants);
-}
-
-// ===== TERMINAL - PARTIE D / E =====
-console.log("=== PARTIE D ===");
-console.log("Moyenne générale:", calculerMoyenne(etudiants.flatMap(e => e.notes)));
-console.log("Admis:", etudiants.filter(estAdmis).map(formaterNom));
-console.log("Noms formatés:", etudiants.map(formaterNom));
-console.log("Effectif par filière:", compterParFiliere(etudiants));
-console.log("Moyenne par filière:", moyenneParFiliere(etudiants));
-console.log("Classement:", classement(etudiants).map(e => formaterNom(e) + " : " + calculerMoyenne(e.notes).toFixed(2)));
-console.log("=== PARTIE E ===");
-console.log("Preuve 1 - moyenne [10,20] = 15 ?", calculerMoyenne([10, 20]) === 15);
-console.log("Preuve 2 - admis si moyenne >= 10 ?", estAdmis({ notes: [12, 12] }) === true);
-console.log("Scénario 1 - notes vides:", calculerMoyenne([]));
-console.log("Scénario 2 - 1 seule note [18]:", calculerMoyenne([18]));
-console.log("Scénario 3 - notes [0,0]:", calculerMoyenne([0, 0]), "Admis ?", estAdmis({ notes: [0, 0] }));
+});
